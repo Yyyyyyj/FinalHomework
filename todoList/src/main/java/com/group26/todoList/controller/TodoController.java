@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +27,7 @@ public class TodoController {
 	/**
 	 * 添加一个新的todo任务
 	 * 
-	 * @param task
+	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -47,7 +49,7 @@ public class TodoController {
 		String data = fileDateUtil.readDate();
 		List<Task> taskList = new ArrayList<>();
 		if (!data.isEmpty()) {
-			//判断是否已存在相同任务内容，若存在，则返回提示
+			//判断是否已存在相同任务内容,若存在,则返回提示
 			taskList = JSONObject.parseArray(data, Task.class);
 			for (Task task : taskList) {
 				if (task.getContent().equals(content)) {
@@ -56,6 +58,7 @@ public class TodoController {
 			}
 		}
 		
+		//像任务列表中添加新的任务
 		taskList.add(newtask);
 		String newData = JSON.toJSONString(taskList);
 		//将新的任务列表写入文件
@@ -64,5 +67,41 @@ public class TodoController {
 		return Result.build(true, "添加任务成功", newtask);
 	}
 
+	/**
+	 * 根据id删除一个task
+	 * 
+	 * @param id 任务id
+	 * @return
+	 * @throws Exception
+	 */
+	@DeleteMapping("/{id}")
+	public Result delectTaskById(@PathVariable String id) throws Exception {
 
+		
+		FileDateUtil fileDateUtil = new FileDateUtil();
+		String data = fileDateUtil.readDate();
+		List<Task> taskList = JSONObject.parseArray(data, Task.class);
+		
+		//判断文件是否为空
+		if (taskList == null || taskList.size() == 0) {
+			return Result.build(false, "当前待办事项为空", null);
+		}
+		
+		//判断文件中是否有当前任务
+		for (int i = 0; i < taskList.size(); i++) {
+			if (taskList.get(i).getId().equals(id)) {
+				//删除当前任务
+				taskList.remove(i);
+				String newData = JSON.toJSONString(taskList);
+				System.out.print(newData);
+				//将删除后的任务列表重新写入覆盖原数据
+				fileDateUtil.writeDate(newData);
+				return Result.build(true, "删除成功", null);
+			}
+		}
+		
+		return Result.build(false, "id对应任务不存在", null);
+	}
+	
+	
 }

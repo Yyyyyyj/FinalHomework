@@ -1,6 +1,7 @@
 package com.group26.todoList.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -20,8 +21,8 @@ public class FileDateUtil {
 	 */
 	public void writeDate(String content) throws IOException {
 		
-		//以读写的方式打开一个FileChannel
-	    RandomAccessFile writer = new RandomAccessFile(filePath, "rw");
+		//打开一个FileChannel
+	    FileOutputStream writer = new FileOutputStream(filePath);
 	    FileChannel channel = writer.getChannel();
 	    //将数据存储到ByteBuffer中
 	    ByteBuffer buff = ByteBuffer.wrap(content.getBytes(StandardCharsets.UTF_8));
@@ -60,6 +61,26 @@ public class FileDateUtil {
 		reader.close();
 
 	    return fileContent;
+	}
+	
+	/**
+	 * 清空文件数据
+	 * @param
+	 * @return
+	 * @throws IOException 
+	 * @throws Exception
+	 */
+	public void emptyDate() throws IOException {
+		
+		//以读写的方式打开一个FileChannel
+	    RandomAccessFile writer = new RandomAccessFile(filePath, "rw");
+	    FileChannel channel = writer.getChannel();
+	    //将数据存储到ByteBuffer中
+	    ByteBuffer buff = ByteBuffer.wrap("".getBytes(StandardCharsets.UTF_8));
+	    //通过通道写入数据
+	    channel.write(buff); 
+	    writer.close();
+	     
 	}
 	
 }
