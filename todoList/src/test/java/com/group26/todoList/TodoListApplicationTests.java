@@ -56,16 +56,28 @@ public class TodoListApplicationTests {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 	}
 	
-	
+	/* 删除任务存在时的测试 */
 	@Test
 	public void testDeleteTask() throws Exception {
 		RequestBuilder request;
-		
-		/* 删除任务存在时的测试 */
-		request = delete("/api/tasks/8da476eb-6e9f-40ff-9120-fd10080616c4");
+
+		request = delete("/api/tasks/ae363b62-60e6-4267-b3ab-2d7087e8ee25");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("删除成功"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+	}
+	
+	/* 修改任务存在时的测试 */
+	@Test
+	public void testUpdateTask() throws Exception {
+		RequestBuilder request;
+	
+		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"id\":\"ae363b62-60e6-4267-b3ab-2d7087e8ee25\",\"content\":\"update test\"}");
+		mvc.perform(request).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("修改成功"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 	}
 
@@ -81,6 +93,14 @@ public class TodoListApplicationTests {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("id对应任务不存在"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+		
+		/* 对应任务ID不在任务列表中时的修改测试 */
+		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"id\":\"1b6f7dac-2425-474d-835b-7746cb154229\",\"content\":\"update test\"}");
+		mvc.perform(request).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("id对应任务不存在"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 	}
 	
 	
@@ -91,6 +111,14 @@ public class TodoListApplicationTests {
 		
 		/* 任务列表中为空时的删除测试 */
 		request = delete("/api/tasks/d5c1c9ee-d657-476d-8fa1-ae432d3e8e73");
+		mvc.perform(request).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("当前待办事项为空"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+		
+		/* 任务列表中为空时的修改测试 */
+		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"id\":\"1b6f7dac-2425-474d-835b-7746cb154229\",\"content\":\"update test\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("当前待办事项为空"))
