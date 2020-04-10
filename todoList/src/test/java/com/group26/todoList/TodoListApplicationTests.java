@@ -68,16 +68,25 @@ public class TodoListApplicationTests {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 	}
 	
-	/* 修改任务存在时的测试 */
+	
 	@Test
 	public void testUpdateTask() throws Exception {
 		RequestBuilder request;
 	
+		/* 修改任务*/
 		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"id\":\"40991b89-d9a1-4425-a137-7c4d71cddc2b\",\"content\":\"update test\"}");
+				.content("{\"id\":\"40991b89-d9a1-4425-a137-7c4d71cddc2b\",\"content\":\"update test51\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("修改成功"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+		
+		/* 修改任务已存在*/
+		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"id\":\"cb4fa9fa-0770-4089-9d9d-5e67e241d9c0\",\"content\":\"update test\"}");
+		mvc.perform(request).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("已存在相同任务"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 	}
 	

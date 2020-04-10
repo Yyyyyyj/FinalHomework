@@ -3,6 +3,8 @@ package com.group26.todoList.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -124,18 +126,29 @@ public class TodoController {
 			return Result.build(false, "当前待办事项为空", null);
 		}
 
-		// 判断文件中是否有当前任务
+		HashSet<String> set = new HashSet<>();
+		for(Task task: taskList) {
+			set.add(task.getContent());
+		}
 		for (int i = 0; i < taskList.size(); i++) {
+			// 判断文件中是否有当前任务id
 			if (taskList.get(i).getId().equals(id)) {
-				// 修改当前任务
-				taskList.get(i).setContent(newContent);
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-				String newTime = dateFormat.format(new Date());
-				taskList.get(i).setCreatedTime(newTime);
-				// 将删除后的任务列表重新写入覆盖原数据
-				String newData = JSON.toJSONString(taskList);
-				fileDateUtil.writeDate(newData);
-				return Result.build(true, "修改成功", null);
+				//判断是否已存在相同任务
+				if(set.contains(newContent)) {
+					return Result.build(false, "已存在相同任务", null);
+				}
+				else {
+					// 修改当前任务
+					taskList.get(i).setContent(newContent);
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+					String newTime = dateFormat.format(new Date());
+					taskList.get(i).setCreatedTime(newTime);
+					// 将删除后的任务列表重新写入覆盖原数据
+					String newData = JSON.toJSONString(taskList);
+					fileDateUtil.writeDate(newData);
+					return Result.build(true, "修改成功", null);
+				}
+				
 			}
 		}
 
