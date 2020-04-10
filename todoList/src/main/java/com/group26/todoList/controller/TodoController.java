@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -139,5 +140,30 @@ public class TodoController {
 		}
 
 		return Result.build(false, "id对应任务不存在", null);
+	}
+
+	/**
+	 * 返回所有todo任务
+	 * 
+	 * @param
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/")
+	public Result getAllTask() throws Exception {
+
+		// 读取文件中的数据
+		FileDateUtil fileDateUtil = new FileDateUtil();
+		String data = fileDateUtil.readDate();
+		List<Task> taskList = JSONObject.parseArray(data, Task.class);
+		// 判断文件是否为空
+		if (taskList == null || taskList.size() == 0) {
+			return Result.build(false, "暂无待办任务", null);
+		} else {
+			// 若任务列表不为空，将数据转化为对象，返回任务列表数据
+			taskList = JSONObject.parseArray(data, Task.class);
+		}
+
+		return Result.build(true, "success", taskList);
 	}
 }

@@ -39,12 +39,12 @@ public class TodoListApplicationTests {
 
 		/* 新增任务测试 */
 		request = post("/api/tasks/").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"content\":\"addTodo test2\"}");
+				.content("{\"content\":\"addTodo test\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("添加任务成功"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data.id").isNotEmpty())
-				.andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value("addTodo test2"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value("addTodo test"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data.createdTime").isNotEmpty());
 
 		/* 新增相同任务测试 */
@@ -74,11 +74,24 @@ public class TodoListApplicationTests {
 		RequestBuilder request;
 	
 		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"id\":\"ae363b62-60e6-4267-b3ab-2d7087e8ee25\",\"content\":\"update test\"}");
+				.content("{\"id\":\"40991b89-d9a1-4425-a137-7c4d71cddc2b\",\"content\":\"update test\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("修改成功"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+	}
+	
+	/* 列表不为空时的读取测试 */
+	@Test
+	public void testGetTask() throws Exception {
+		RequestBuilder request;
+	
+		request = get("/api/tasks/");
+		mvc.perform(request).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("success"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data[0]").isNotEmpty())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data[1]").isNotEmpty());
 	}
 
 	
@@ -122,6 +135,13 @@ public class TodoListApplicationTests {
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("当前待办事项为空"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+		
+		/* 任务列表中为空时的读取测试 */
+		request = get("/api/tasks/");
+		mvc.perform(request).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("暂无待办任务"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 	}
 }
