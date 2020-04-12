@@ -1,5 +1,8 @@
 package com.group26.todoList.model;
 
+/**
+ * model
+ */
 public class Task {
 
 	private String id;
