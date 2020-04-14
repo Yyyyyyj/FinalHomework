@@ -74,16 +74,16 @@ public class TodoListApplicationTests {
 		RequestBuilder request;
 	
 		/* 修改任务*/
-		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"id\":\"40991b89-d9a1-4425-a137-7c4d71cddc2b\",\"content\":\"update test51\"}");
+		request = put("/api/tasks/").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"id\":\"40991b89-d9a1-4425-a137-7c4d71cddc2b\",\"content\":\"update test999\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("修改成功"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 		
 		/* 修改任务已存在*/
-		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
-				.content("{\"id\":\"cb4fa9fa-0770-4089-9d9d-5e67e241d9c0\",\"content\":\"update test\"}");
+		request = put("/api/tasks/").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"id\":\"cb4fa9fa-0770-4089-9d9d-5e67e241d9c0\",\"content\":\"update test999\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("已存在相同任务"))
@@ -117,7 +117,7 @@ public class TodoListApplicationTests {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 		
 		/* 对应任务ID不在任务列表中时的修改测试 */
-		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
+		request = put("/api/tasks/").contentType(MediaType.APPLICATION_JSON)
 				.content("{\"id\":\"1b6f7dac-2425-474d-835b-7746cb154229\",\"content\":\"update test\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
@@ -139,7 +139,7 @@ public class TodoListApplicationTests {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
 		
 		/* 任务列表中为空时的修改测试 */
-		request = post("/api/tasks/update").contentType(MediaType.APPLICATION_JSON)
+		request = put("/api/tasks/").contentType(MediaType.APPLICATION_JSON)
 				.content("{\"id\":\"1b6f7dac-2425-474d-835b-7746cb154229\",\"content\":\"update test\"}");
 		mvc.perform(request).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false))
