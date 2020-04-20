@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.group26.todoList.model.InteractionTest;
 import com.group26.todoList.model.Result;
 import com.group26.todoList.model.Task;
 import com.group26.todoList.utils.FileDateUtil;
@@ -27,7 +28,7 @@ import com.group26.todoList.utils.FileDateUtil;
 @RestController
 @RequestMapping(value = "/api/tasks")
 public class TodoController {
-
+	
 	/**
 	 * 添加一个新的todo任务
 	 * 
@@ -52,7 +53,7 @@ public class TodoController {
 		FileDateUtil fileDateUtil = new FileDateUtil();
 		String data = fileDateUtil.readDate();
 		List<Task> taskList = new ArrayList<>();
-		if (!data.isEmpty()) {
+		if (data != null && !data.isEmpty()) {
 			// 判断是否已存在相同任务内容,若存在,则返回提示
 			taskList = JSONObject.parseArray(data, Task.class);
 			for (Task task : taskList) {
@@ -180,4 +181,41 @@ public class TodoController {
 
 		return Result.build(true, "success", taskList);
 	}
+	
+	/**
+	 * 前后端连通测试
+	 * 
+	 * @param
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/test")
+	public List<InteractionTest> getAllTaskq() {
+		
+		List<InteractionTest> list = new ArrayList<>();
+		for(int i=0; i<3; i++) {
+			InteractionTest content = new InteractionTest();
+			content.setContent("test"+i);
+			list.add(content);
+		}
+		
+		return list;
+    }
+	
+	/**
+	 * 前后端连通测试
+	 * 
+	 * @param
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/test1")
+	public String getAll() {
+		
+		String s = "success";
+		
+		return s;
+    }
+
+
 }

@@ -1,6 +1,8 @@
 package com.group26.todoList.utils;
 
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -10,7 +12,10 @@ import java.nio.charset.StandardCharsets;
 
 public class FileDateUtil {
 
-	private String filePath = "src/main/resources/static/task.json";
+
+	
+	
+	private String BasePath = "D:\\task.json";
 
 	/**
 	 * 写入文件数据
@@ -21,8 +26,12 @@ public class FileDateUtil {
 	 */
 	public void writeDate(String content) throws IOException {
 		
+		File file = new File(BasePath);
+		if(!file.exists()) {
+          file.createNewFile();
+		}
 		//打开一个FileChannel
-	    FileOutputStream writer = new FileOutputStream(filePath);
+	    FileOutputStream writer = new FileOutputStream(BasePath);
 	    FileChannel channel = writer.getChannel();
 	    //将数据存储到ByteBuffer中
 	    ByteBuffer buff = ByteBuffer.wrap(content.getBytes(StandardCharsets.UTF_8));
@@ -41,8 +50,12 @@ public class FileDateUtil {
 	 */
 	public String readDate() throws IOException {
 		
-
-		RandomAccessFile reader = new RandomAccessFile(filePath, "r");
+		File file = new File(BasePath);
+		if(!file.exists()) {
+          file.createNewFile();
+		}
+        
+		RandomAccessFile reader = new RandomAccessFile(BasePath, "r");
 		FileChannel channel = reader.getChannel();
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -62,5 +75,4 @@ public class FileDateUtil {
 
 	    return fileContent;
 	}
-	
 }
