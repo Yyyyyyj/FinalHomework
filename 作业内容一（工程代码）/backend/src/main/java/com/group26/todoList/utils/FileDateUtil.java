@@ -48,7 +48,6 @@ public class FileDateUtil {
 	 * @throws IOException 
 	 * @throws Exception
 	 */
-
 	public String readDate() throws IOException {
 		
 		File file = new File(BasePath);

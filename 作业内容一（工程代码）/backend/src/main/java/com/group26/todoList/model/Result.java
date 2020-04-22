@@ -1,6 +1,5 @@
 package com.group26.todoList.model;
 
-
 public class Result {
 
 	private boolean status;
