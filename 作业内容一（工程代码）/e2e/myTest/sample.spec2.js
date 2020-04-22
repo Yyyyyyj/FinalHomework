@@ -2,15 +2,16 @@ describe('show todo', function() {
     let page;
 
     before (async function () {
+        const BASE_URL = "http://127.0.0.1:7001";
         page = await browser.newPage();
-        await page.goto("http://127.0.0.1:7001");
+        await page.goto("${BASE_URL}");
     });
 
     after (async function () {
         await page.close();
     });
 
-    it('should show todo correct', async function() {
+    testShowTodolist('should show todo correct', async function() {
         const todoListLength = await page.evaluate(() => {
             return document.getElementsByClassName('view').length;
         });
